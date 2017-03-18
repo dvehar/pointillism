@@ -118,33 +118,6 @@ function putImage(imgSource, isWeb) {
     if (isWeb) {
       local_image_idx = -1;
     }
-
-    // start the processing and display intervals.
-    if (isProcessing()) {
-      alert('the processing interval should not be set'); // debugging
-    } else if (isDrawing()) {
-        alert('the display interval should not be set'); // debugging
-      } else {
-          if (selectedDirectionFillButton == CENTER_FILL_BUTTON) {
-            processingSpeed = FRAME_PROCESSING_SPEED;
-            displaySpeed = FRAME_DISPLAY_SPEED;
-            pixelsPerProcessingInterval = imageData.data.length / 4; // all the pixels
-          } else {
-              processingSpeed = LINE_PROCESSING_SPEED;
-              displaySpeed = LINE_DISPLAY_SPEED;
-              if (selectedDirectionFillButton == $('#RightFillButton')[0] || selectedDirectionFillButton == $('#LeftFillButton')[0]) {
-                pixelsPerProcessingInterval = canvas.height;
-              } else if (selectedDirectionFillButton == $('#UpFillButton')[0] || selectedDirectionFillButton == $('#DownFillButton')[0]) {
-                pixelsPerProcessingInterval = canvas.width;
-              } else {
-                //} else if (selectedDirectionFillButton == $('#LeftDownFillButton') || selectedDirectionFillButton == $('#RightDownFillButton') ) {
-                // diagonal
-                updatePixelsPerProcessingInterval();
-              }
-            }
-          toggleProcessing();
-          toggleDrawing();
-        }
   };
 
   image.onerror = () => {
@@ -164,8 +137,6 @@ function putImage(imgSource, isWeb) {
   if (isWeb) {
     image.crossOrigin = ''; // no credentials flag. Same as img.crossOrigin='anonymous'
   }
-
-  //console.log('out putImage');
 }
 
 
