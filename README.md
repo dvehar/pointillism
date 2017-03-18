@@ -1,7 +1,7 @@
 pointillism
 ==========
-Staging: https://snow-image-staging.herokuapp.com/
-Production: https://snow-image.herokuapp.com/
+Staging: https://pointillism-staging.herokuapp.com/<br>
+Production: https://pointillism-prod.herokuapp.com/
 
 A web app that can render user specified images in the style of pointillism
 
