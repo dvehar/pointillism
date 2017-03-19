@@ -53,3 +53,17 @@ function rgb2lab(rgb){
 function randomInt(max_val) {
     return Math.floor(Math.floor(max_val + 1) * Math.random());
 }
+
+function randomSortArray(array) {
+  var len = array.length;
+
+  var newArray = array.slice();
+  for (var i=0; i < len; ++i) {
+    var idx = Math.floor(Math.random() * len);
+    var tmp = newArray[idx];
+    newArray[idx] = newArray[i];
+    newArray[i] = tmp; 
+  }
+
+  return newArray;
+}

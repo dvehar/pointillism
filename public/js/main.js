@@ -112,7 +112,7 @@ function putImage(imgSource, isWeb) {
 
   // Load an image to convert.
   if (imgSource == null) {
-    local_image_idx = 6;//0;
+    local_image_idx = 4;//0;
     image.src = LOCAL_IMAGES[local_image_idx];
   } else {
     image.src = imgSource;
@@ -157,66 +157,38 @@ function getPixel (row, col) {
 
 function computeFrame() {
   console.log('computeFrame >');
+  // the surrounding pixels:
+  // A B C
+  // D _ E
+  // F G H
+  let surroundingPixels = [
+    {row: -1, col: -1},
+    {row: -1, col: 0},
+    {row: -1, col: 1},
+    {row: 0, col: -1},
+    {row: 0, col: 1},
+    {row: 1, col: -1},
+    {row: 1, col: 0},
+    {row: 1, col: 1}
+  ];
   // loop through all the pixels
-  // for (let rowIdx = 0; rowIdx < get_row_count(); ++rowIdx) {
-  for (let rowIdx = 0; rowIdx < 30; ++rowIdx) {
+  for (let rowIdx = 0; rowIdx < get_row_count(); ++rowIdx) {
+  // for (let rowIdx = 0; rowIdx < 100; ++rowIdx) {
     console.log('Row start');
   
-    // for (let colIdx = 0; colIdx < get_col_count(); ++colIdx) {
-    for (let colIdx = 0; colIdx < 30; ++colIdx) {
-      // get the surrounding pixels:
-      // A B C
-      // D _ E
-      // F G H
-      let pixel = getPixel(rowIdx, colIdx);
-      let A = getPixel(rowIdx - 1, colIdx - 1);
-      let B = getPixel(rowIdx - 1, colIdx - 0);
-      let C = getPixel(rowIdx - 1, colIdx + 1);
-      let D = getPixel(rowIdx - 0, colIdx - 1);
-      let E = getPixel(rowIdx - 0, colIdx + 1);
-      let F = getPixel(rowIdx + 1, colIdx - 1);
-      let G = getPixel(rowIdx + 1, colIdx - 0);
-      let H = getPixel(rowIdx + 1, colIdx + 1);
-      let surroundingPixels = [A, B, C, D, E, F, G, H].filter(p => p !== null);
-      // debugger;
-      let sorted = surroundingPixels.sort(function (a, b) {
-        let labA = rgb2lab(a);
-        let labAResolved = {
-          L: labA[0],
-          A: labA[1],
-          B: labA[2]
-        };
-        let labB = rgb2lab(b);
-        let labBResolved = {
-          L: labB[0],
-          A: labB[1],
-          B: labB[2]
-        };
-        // console.log(labA);
-        // console.log(labB);
-        // debugger;
-        var result = null;
-        $.ajax({
-          type: 'POST',
-          url: 'delta-e',
-          dataType: 'json',
-          contentType : 'application/json',
-          async: false,
-          data: JSON.stringify({
-            lab1: labAResolved,
-            lab2: labBResolved
-          }),
-          success: function(data) {
-            result = data.result;
-          }
-        });
-
-        return result;
-      });
-
-      var top = sorted.splice(0,3);
-      for (var i=0; i < top.length; ++i) {
-        var color = rgbToHex(top[i][0],top[i][1],top[i][2]); // '#ff0000';
+    for (let colIdx = 0; colIdx < get_col_count(); ++colIdx) {
+    // for (let colIdx = 0; colIdx < 30; ++colIdx) {
+      let shuffeledSurrounding = randomSortArray(surroundingPixels);
+      let clean = [];
+      for (var i=0; i < shuffeledSurrounding.length && clean.length < 3; ++i) {
+        var cords = shuffeledSurrounding[i];
+        var pixel = getPixel(colIdx - cords.col, rowIdx - cords.row);
+        if (pixel !== null) {
+          clean.push(pixel);
+        }
+      }
+      for (var i=0; i < clean.length; ++i) {
+        var color = rgbToHex(clean[i][0], clean[i][1], clean[i][2]); // '#ff0000';
         ctx.fillStyle = color;
         ctx.beginPath();
         var rowRand = Math.floor(Math.random() * 3);
@@ -241,9 +213,9 @@ function computeFrame() {
         var col = Math.max(0, colIdx + colChange);
         ctx.arc(row, col, 2, 0, Math.PI * 2, true);
         ctx.fill();
-        console.log('color: ' + color);
-        console.log('row: ' + row);
-        console.log('col: ' + col);
+        // console.log('color: ' + color);
+        // console.log('row: ' + row);
+        // console.log('col: ' + col);
       } 
     } 
   }
