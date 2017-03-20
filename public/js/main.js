@@ -7,11 +7,13 @@ const LOCAL_IMAGES = [
   './images/bird.png',
   './images/ballon.png',
   './images/a_starry_night.png',
-  './images/Vincent_van_Gogh.png'
+  './images/Vincent_van_Gogh.png',
+  './images/lady.png',
+  './images/obama.png'
 ];
 
 let local_image_idx = -1; // the idx into LOCAL_IMAGES if it is being used.
-let default_local_image_idx = 0;
+let default_local_image_idx = 8;
 
 let canvas = null;
 let ctx = null;
@@ -23,7 +25,7 @@ let displaySpeed = 300;
 let processingIntervalId = null;
 let processingSpeed = 800;
 
-let dotSize = 5;
+let dotSize = 2;
 // the surrounding pixels:
 // A B C
 // D _ E
@@ -97,20 +99,15 @@ function putImage(imgSource, isWeb) {
       ori_data.push(green);
       ori_data.push(blue);
       ori_data.push(255);
-
-      // Convert to grayscale.
-      let grayScale = red * 0.2989 + green * 0.5870 + blue * 0.1140;
     }
 
     if (isWeb) {
       local_image_idx = -1;
     }
 
-    // displayFrame();
-
-
-    computeFrame();
-    // displayFrame();
+    var id = setTimeout(function() {
+      computeFrame();
+    }, 100);
   };
 
   image.onerror = () => {
