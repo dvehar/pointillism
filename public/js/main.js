@@ -11,6 +11,7 @@ const LOCAL_IMAGES = [
 ];
 
 let local_image_idx = -1; // the idx into LOCAL_IMAGES if it is being used.
+let default_local_image_idx = 0;
 
 let canvas = null;
 let ctx = null;
@@ -21,6 +22,13 @@ let displayIntervalId = null;
 let displaySpeed = 300;
 let processingIntervalId = null;
 let processingSpeed = 800;
+
+let dotSize = 5;
+// the surrounding pixels:
+// A B C
+// D _ E
+// F G H
+let surroundingPixels = generateSurronding(dotSize * 2 - 1);
 
 // imageData is flat array and every group of four indicies denotes the RGBA values for a pixel
 function get_pixel_count() {
@@ -112,7 +120,7 @@ function putImage(imgSource, isWeb) {
 
   // Load an image to convert.
   if (imgSource == null) {
-    local_image_idx = 4;//0;
+    local_image_idx = default_local_image_idx;
     image.src = LOCAL_IMAGES[local_image_idx];
   } else {
     image.src = imgSource;
@@ -155,28 +163,31 @@ function getPixel (row, col) {
 // i j k l
 // m n o p
 
+function generateSurronding(radius) {
+  var result = [];
+
+  for (var row = -radius; row <= radius; ++row) {
+    for (var col = -radius; col <= radius; ++col) {
+      if (row !== 0 || col !== 0) {
+        result.push({
+          row: row,
+          col: col
+        });
+      }
+    }
+  }
+
+  return result;
+}
+
 function computeFrame() {
   console.log('computeFrame >');
-  // the surrounding pixels:
-  // A B C
-  // D _ E
-  // F G H
-  let surroundingPixels = [
-    {row: -1, col: -1},
-    {row: -1, col: 0},
-    {row: -1, col: 1},
-    {row: 0, col: -1},
-    {row: 0, col: 1},
-    {row: 1, col: -1},
-    {row: 1, col: 0},
-    {row: 1, col: 1}
-  ];
   // loop through all the pixels
-  for (let rowIdx = 0; rowIdx < get_row_count(); ++rowIdx) {
+  for (let rowIdx = 0; rowIdx < get_row_count(); rowIdx += Math.floor(dotSize / 2)) {
   // for (let rowIdx = 0; rowIdx < 100; ++rowIdx) {
     console.log('Row start');
   
-    for (let colIdx = 0; colIdx < get_col_count(); ++colIdx) {
+    for (let colIdx = 0; colIdx < get_col_count(); colIdx += Math.floor(dotSize / 2)) {
     // for (let colIdx = 0; colIdx < 30; ++colIdx) {
       let shuffeledSurrounding = randomSortArray(surroundingPixels);
       let clean = [];
@@ -211,7 +222,7 @@ function computeFrame() {
         }
         var row = Math.max(0, rowIdx + rowChange);
         var col = Math.max(0, colIdx + colChange);
-        ctx.arc(row, col, 2, 0, Math.PI * 2, true);
+        ctx.arc(row, col, dotSize, 0, Math.PI * 2, true);
         ctx.fill();
         // console.log('color: ' + color);
         // console.log('row: ' + row);

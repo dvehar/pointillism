@@ -58,7 +58,7 @@ function randomSortArray(array) {
   var len = array.length;
 
   var newArray = array.slice();
-  for (var i=0; i < len; ++i) {
+  for (var i=0; i < len; i += 2) {
     var idx = Math.floor(Math.random() * len);
     var tmp = newArray[idx];
     newArray[idx] = newArray[i];
