@@ -183,17 +183,23 @@ function generateSurronding(radius) {
 function computeFrame() {
   console.log('computeFrame >');
   // loop through all the pixels
-  for (let rowIdx = 0; rowIdx < get_row_count(); rowIdx += Math.floor(dotSize / 2)) {
+  let stepSize = Math.floor(dotSize / 2);
+  console.log(get_row_count());
+  console.log(get_col_count());
+  let rowIdx;
+  let colIdx;
+  for (rowIdx = 0; rowIdx < get_row_count(); rowIdx += stepSize) {
   // for (let rowIdx = 0; rowIdx < 100; ++rowIdx) {
     console.log('Row start');
   
-    for (let colIdx = 0; colIdx < get_col_count(); colIdx += Math.floor(dotSize / 2)) {
+    for (colIdx = 0; colIdx < get_col_count(); colIdx += stepSize) {
     // for (let colIdx = 0; colIdx < 30; ++colIdx) {
       let shuffeledSurrounding = randomSortArray(surroundingPixels);
       let clean = [];
       for (var i=0; i < shuffeledSurrounding.length && clean.length < 3; ++i) {
         var cords = shuffeledSurrounding[i];
-        var pixel = getPixel(colIdx - cords.col, rowIdx - cords.row);
+        // var pixel = getPixel(colIdx - cords.col, rowIdx - cords.row);
+        var pixel = getPixel(rowIdx - cords.row, colIdx - cords.col);
         if (pixel !== null) {
           clean.push(pixel);
         }
@@ -222,7 +228,7 @@ function computeFrame() {
         }
         var row = Math.max(0, rowIdx + rowChange);
         var col = Math.max(0, colIdx + colChange);
-        ctx.arc(row, col, dotSize, 0, Math.PI * 2, true);
+        ctx.arc(col, row, dotSize, 0, Math.PI * 2, true);
         ctx.fill();
         // console.log('color: ' + color);
         // console.log('row: ' + row);
@@ -230,6 +236,17 @@ function computeFrame() {
       } 
     } 
   }
+  console.log(rowIdx);
+  console.log(colIdx);
+
+  // for (var k=0; k < 3000; k += 4) {
+  //   imageData.data[k] = 255;
+  //   imageData.data[k + 1] = 0;
+  //   imageData.data[k + 2] = 0;
+  //   // imageData.data[basePixelIdx + 3]  
+  // }
+  // ctx.putImageData(imageData, 0, 0);
+  
   console.log('< computeFrame');
 }
 
